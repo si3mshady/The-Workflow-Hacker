@@ -3,6 +3,7 @@ on:
   push:
     branches: [main]
 permissions:
+  contents: read
   pages: write
   id-token: write
 jobs:
@@ -10,11 +11,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: withastro/action@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          path: ./radiant-resonance
           node-version: 18
-      - uses: actions/deploy-pages@v1
+          cache: 'npm'
+          cache-dependency-path: './radiant-resonance/package-lock.json'
+      - name: Install dependencies
+        run: npm ci
+        working-directory: ./radiant-resonance
+      - name: Build Astro site
+        run: npm run build
+        working-directory: ./radiant-resonance
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v2
         with:
-          branch: gh-pages
-          folder: dist
+          path: ./radiant-resonance/dist
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v2

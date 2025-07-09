@@ -1,14 +1,11 @@
 ﻿name: Deploy Astro to GitHub Pages
-
 on:
   push:
     branches: [main]
-
 permissions:
   contents: read
   pages: write
   id-token: write
-
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -33,6 +30,6 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: radiant-resonance/dist
-          name: github-pages   # <-- REQUIRED to avoid the duplicate artifact issue
 
       - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
